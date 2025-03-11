@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="styles.css"> <!-- если нужен стиль -->
+</head>
+<body>
+<h2>Регистрация нового пользователя</h2>
+
+<form action="/registration" method="POST" th:object="${userForm}">
+    <!-- Поле для username -->
+    <div>
+        <label for="username">Имя пользователя:</label>
+        <input type="text" id="username" th:field="*{username}" required>
+        <div th:if="${#fields.hasErrors('username')}" style="color: red;">
+            <p th:errors="*{username}"></p>  <!-- Вывод ошибки для поля username -->
+    </div>
+
+    <!-- Поле для пароля -->
+    <div>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" th:field="*{password}" required>
+        <div th:if="${#fields.hasErrors('password')}" style="color: red;">
+            <p th:errors="*{password}"></p>  <!-- Вывод ошибки для поля username -->
+    </div>
+
+    <!-- Поле для подтверждения пароля -->
+    <div>
+        <label for="passwordConfirm">Подтвердите пароль:</label>
+        <input type="password" id="passwordConfirm" th:field="*{passwordConfirm}" required>
+    </div>
+
+    <!-- Ошибка при несовпадении паролей -->
+    <div style="color: red;">
+        <span th:if="${passwordError}" th:text="${passwordError}"></span>
+    </div>
+
+    <!-- Ошибка при уже существующем пользователе -->
+    <div style="color: red;">
+        <span th:if="${usernameError}" th:text="${usernameError}"></span>
+    </div>
+
+    <div>
+        <button type="submit">Зарегистрироваться</button>
+    </div>
+
+    <a href="/login">
+        <button type="button">Уже есть аккаунт? Войти</button>
+    </a>
+</form>
+</body>
+</html>

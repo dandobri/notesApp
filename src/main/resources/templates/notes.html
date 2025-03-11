@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заметки пользователя</title>
+</head>
+<body>
+
+<h1>Заметки пользователя <span th:text="${user.username}"></span></h1>
+
+<!-- Вывод ошибок, если они есть -->
+<div th:if="${error}">
+    <p th:text="${error}"></p>
+</div>
+
+<!-- Список заметок -->
+<h3>Ваши заметки:</h3>
+<ul>
+    <li th:each="note : ${notes}">
+        <span th:text="${note.title}"></span> - <span th:text="${note.content}"></span>
+        <form th:action="@{/notes/delete/{id}(id=${note.id}, userId=${user.id})}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit">Удалить</button>
+        </form>
+        <a th:href="@{/notes/edit/{id}(id=${note.id})}">
+            <button>Редактировать</button>
+        </a>
+    </li>
+</ul>
+
+<!-- Кнопка для создания новой заметки -->
+<a th:href="@{/notes/create(userId=${user.id})}">Создать новую заметку</a>
+
+<a href="/login">Выйти</a>
+</body>
+</html>

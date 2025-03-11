@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать заметку</title>
+</head>
+<body>
+
+<h1>Редактировать заметку</h1>
+
+<form th:action="@{/notes/edit/{id}(id=${note.id})}" method="post">
+    <input type="hidden" name="id" th:value="${note.id}">
+    <input type="hidden" name="userId" th:value="${note.user.id}">
+
+    <label for="title">Заголовок:</label>
+    <input type="text" id="title" name="title" th:value="${note.title}" required>
+
+    <br>
+
+    <label for="content">Содержание:</label>
+    <textarea id="content" name="content" required th:text="${note.content}"></textarea>
+
+    <br>
+
+    <button type="submit">Обновить</button>
+</form>
+
+<a th:href="@{/notes(userId=${note.user.id})}">Назад к списку заметок</a>
+
+</body>
+</html>

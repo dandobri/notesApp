@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создать новую заметку</title>
+</head>
+<body>
+
+<h1>Создание новой заметки</h1>
+
+<form action="/notes/create" method="post">
+    <input type="hidden" name="userId" th:value="${user.id}">
+
+    <label for="title">Заголовок:</label>
+    <input type="text" id="title" name="title" required>
+
+    <br>
+
+    <label for="content">Содержание:</label>
+    <textarea id="content" name="content" required></textarea>
+
+    <br>
+
+    <button type="submit">Сохранить</button>
+</form>
+
+<a th:href="@{/notes(userId=${user.id})}">Назад к списку заметок</a>
+
+</body>
+</html>
