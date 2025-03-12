@@ -21,7 +21,7 @@ public class LoginController {
         return "login";
     }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public String checkUser(@RequestParam String username, @RequestParam String password, Model model) {
         Optional<User> userByUsername = userService.findUserByUsername(username);
         if (userByUsername.isEmpty()) {
@@ -34,5 +34,5 @@ public class LoginController {
             return "login";
         }
         return "redirect:/notes?userId=" + userByUsername.get().getId();
-    }
+    }*/
 }

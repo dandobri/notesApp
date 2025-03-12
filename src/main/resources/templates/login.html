@@ -7,14 +7,17 @@
 </head>
 <body>
 <h2>Вход в систему</h2>
+<div style="color: red" th:if="${param.error}">
+    Invalid username or password
+</div>
 <!-- Выводим ошибки -->
-<div th:if="${passwordError}" style="color: red;">
+<!--<div th:if="${passwordError}" style="color: red;">
     <p th:text="${passwordError}"></p>
 </div>
 
 <div th:if="${usernameError}" style="color: red;">
     <p th:text="${usernameError}"></p>
-</div>
+</div>-->
 <!-- Форма для ввода юзернейма и пароля -->
 <form action="/login" method="POST">
     <label for="username">Имя пользователя:</label>

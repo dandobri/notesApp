@@ -3,6 +3,9 @@ package daniil.dobris.notes.service;
 import daniil.dobris.notes.entities.User;
 import daniil.dobris.notes.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +13,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     public User findUserById(Long id) {
@@ -29,10 +32,8 @@ public class UserService {
         userRepository.save(user);
         return true;
     }
-
-    /*@Override
+    @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        System.out.println(1);
         return userRepository.findByUsername(userName)
                 .map(user -> new org.springframework.security.core.userdetails.User(
                         user.getUsername(),
@@ -40,8 +41,7 @@ public class UserService {
                         Collections.singleton(user.getRole())
                 ))
                 .orElseThrow(() -> new UsernameNotFoundException("Failed to retrieve user " + userName));
-    }*/
-
+    }
     /*@Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findUserByUsername(username);

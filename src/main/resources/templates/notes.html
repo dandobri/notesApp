@@ -33,6 +33,9 @@
 <!-- Кнопка для создания новой заметки -->
 <a th:href="@{/notes/create(userId=${user.id})}">Создать новую заметку</a>
 
-<a href="/login">Выйти</a>
+<div th:insert="~{fragment :: header}"></div>
+<!--<form th:action="@{/logout}" method="post" style="display:inline;">
+    <button type="submit">Выйти</button>
+</form>-->
 </body>
 </html>
