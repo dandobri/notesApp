@@ -5,11 +5,16 @@ import daniil.dobris.notes.entities.User;
 import daniil.dobris.notes.service.NoteService;
 import daniil.dobris.notes.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/notes")
@@ -18,11 +23,21 @@ public class NoteController {
     private NoteService noteService;
     @Autowired
     private UserService userService;
-    /*@Autowired
-    private SecurityService securityService;*/
 
+    public void checkAccessToNote(Long userId, UserDetails userDetails) {
+        Optional<User> curUser = userService.findUserByUsername(userDetails.getUsername());
+        if (curUser.isPresent()) {
+            if (!curUser.get().getId().equals(userId)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                        "Access Denied! You cannot access other users' notes.");
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized access");
+        }
+    }
     @GetMapping
-    public String showNotesPage(@RequestParam("userId") Long userId, Model model) {
+    public String showNotesPage(@RequestParam("userId") Long userId, @AuthenticationPrincipal UserDetails userDetails, Model model) {
+        checkAccessToNote(userId, userDetails);
         List<Note> notes = noteService.getNotesByUserId(userId);
         User curUser = userService.findUserById(userId);
         model.addAttribute("user", curUser);
@@ -31,28 +46,21 @@ public class NoteController {
         return "notes";
     }
     @GetMapping("/create")
-    public String showCreateNotePage(@RequestParam("userId") Long userId, Model model) {
+    public String showCreateNotePage(@RequestParam("userId") Long userId, @AuthenticationPrincipal UserDetails userDetails, Model model) {
+        checkAccessToNote(userId, userDetails);
         User user = userService.findUserById(userId);
         if (user == null) {
             model.addAttribute("error", "User not found");
             return "login";
         }
-        /*Long currentUserId = securityService.getCurrentUserId();
-        if (!currentUserId.equals(userId)) {
-            model.addAttribute("error", "You are not authorized to edit this note");
-            return "redirect:/notes";
-        }*/
         model.addAttribute("user", user);
         return "create_note";
     }
     @PostMapping("/create")
     public String createNote(@RequestParam("userId") Long userId,
-                             @RequestParam("title") String title, @RequestParam("content") String content, Model model) {
-        /*Long currentUserId = securityService.getCurrentUserId();
-        if (!currentUserId.equals(userId)) {
-            model.addAttribute("error", "You are not authorized to edit this note");
-            return "redirect:/notes";
-        }*/
+                             @RequestParam("title") String title, @RequestParam("content") String content,
+                             @AuthenticationPrincipal UserDetails userDetails, Model model) {
+        checkAccessToNote(userId, userDetails);
         if (!noteService.createNote(userId, title, content)) {
             model.addAttribute("message", "This user is not exist");
             return "redirect:/notes";
@@ -60,14 +68,11 @@ public class NoteController {
         return "redirect:/notes?userId=" + userId;
     }
     @GetMapping("/edit/{id}")
-    public String showEditNoteForm(@PathVariable("id") Long id, Model model) {
+    public String showEditNoteForm(@PathVariable("id") Long id,
+                                   @AuthenticationPrincipal UserDetails userDetails, Model model) {
         Note note = noteService.getNoteById(id);
         if (note != null) {
-            /*Long currentUserId = securityService.getCurrentUserId();
-            if (!currentUserId.equals(note.getUser().getId())) {
-                model.addAttribute("error", "You are not authorized to edit this note");
-                return "redirect:/notes";
-            }*/
+            checkAccessToNote(note.getUser().getId(), userDetails);
             model.addAttribute("note", note);
             model.addAttribute("userId", note.getUser().getId());
             return "edit_note";
@@ -79,12 +84,9 @@ public class NoteController {
     @PostMapping("/edit/{id}")
     public String editNote(@PathVariable("id") Long id,
                            @RequestParam("title") String title, @RequestParam("content") String content,
-                           @RequestParam("userId") Long userId, Model model) {
-        /*Long currentUserId = securityService.getCurrentUserId();
-        if (!currentUserId.equals(userId)) {
-            model.addAttribute("error", "You are not authorized to edit this note");
-            return "redirect:/notes";
-        }*/
+                           @RequestParam("userId") Long userId, @AuthenticationPrincipal UserDetails userDetails,
+                           Model model) {
+        checkAccessToNote(userId, userDetails);
         if (content == null || content.trim().isEmpty()) {
             noteService.deleteNote(id);
             return "redirect:/notes?userId=" + userId;
@@ -97,7 +99,9 @@ public class NoteController {
         }
     }
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public String deleteNode(@PathVariable("id") Long id, @RequestParam("userId") Long userId) {
+    public String deleteNode(@PathVariable("id") Long id, @RequestParam("userId") Long userId,
+                             @AuthenticationPrincipal UserDetails userDetails) {
+        checkAccessToNote(userId, userDetails);
         noteService.deleteNote(id);
         return "redirect:/notes?userId=" + userId;
     }

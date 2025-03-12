@@ -1,9 +1,7 @@
 package daniil.dobris.notes.handler;
 
 import daniil.dobris.notes.entities.User;
-import daniil.dobris.notes.repository.UserRepository;
 import daniil.dobris.notes.service.UserService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication) throws IOException {
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
         Optional<User> userByUsername = userService.findUserByUsername(username);
         if (userByUsername.isPresent()) {

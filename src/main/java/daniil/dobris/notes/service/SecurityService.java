@@ -1,4 +1,4 @@
-/*package daniil.dobris.notes.service;
+package daniil.dobris.notes.service;
 
 import daniil.dobris.notes.entities.User;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,4 +10,4 @@ public class SecurityService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return user.getId();
     }
-}*/
+}
