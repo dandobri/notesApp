@@ -4,7 +4,6 @@ import daniil.dobris.notes.entities.Note;
 import daniil.dobris.notes.entities.User;
 import daniil.dobris.notes.repository.NoteRepository;
 import daniil.dobris.notes.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +13,13 @@ import java.util.Optional;
 
 @Service
 public class NoteService {
-    @Autowired
-    private NoteRepository noteRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final NoteRepository noteRepository;
+    private final UserRepository userRepository;
+
+    public NoteService(NoteRepository noteRepository, UserRepository userRepository) {
+        this.noteRepository = noteRepository;
+        this.userRepository = userRepository;
+    }
 
     @Transactional
     public boolean createNote(Long userId, String title, String content) {

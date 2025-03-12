@@ -4,7 +4,6 @@ import daniil.dobris.notes.entities.User;
 import daniil.dobris.notes.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -15,8 +14,11 @@ import java.util.Optional;
 
 @Component
 public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public CustomLoginSuccessHandler(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

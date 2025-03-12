@@ -4,7 +4,6 @@ import daniil.dobris.notes.entities.Note;
 import daniil.dobris.notes.entities.User;
 import daniil.dobris.notes.service.NoteService;
 import daniil.dobris.notes.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,10 +18,13 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/notes")
 public class NoteController {
-    @Autowired
-    private NoteService noteService;
-    @Autowired
-    private UserService userService;
+    private final NoteService noteService;
+    private final UserService userService;
+
+    public NoteController(NoteService noteService, UserService userService) {
+        this.noteService = noteService;
+        this.userService = userService;
+    }
 
     public void checkAccessToNote(Long userId, UserDetails userDetails) {
         Optional<User> curUser = userService.findUserByUsername(userDetails.getUsername());

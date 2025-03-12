@@ -4,7 +4,6 @@ import daniil.dobris.notes.entities.Role;
 import daniil.dobris.notes.entities.User;
 import daniil.dobris.notes.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,11 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class RegistrationController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    /*@Autowired
-    private PasswordEncoder passwordEncoder;*/
+    public RegistrationController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/registration")
     public String registration(Model model) {
@@ -37,7 +36,6 @@ public class RegistrationController {
             return "registration";
         }
         userForm.setRole(Role.USER);
-        //userForm.setPassword(passwordEncoder.encode(userForm.getPassword()));
         if (!userService.saveUser(userForm)) {
             model.addAttribute("usernameError", "Username already exists");
             return "registration";
